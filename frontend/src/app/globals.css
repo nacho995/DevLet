@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --canvas-particle-opacity: 0.5;
+  --text-contrast: 1;
+  --box-text-color: #4338ca; /* Color para texto en cajas con fondo */
+  --box-bg-opacity: 0.1;
+  --box-border-opacity: 0.3;
+}
+
+@layer base {
+  :root {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+  }
+}
+
+/* Restauramos el tema oscuro con mejores contrastes */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #050505; /* Negro más oscuro para mejor contraste */
+    --foreground: #ffffff; /* Blanco puro para mejor legibilidad */
+    --canvas-particle-opacity: 0.8; /* Mayor opacidad para partículas en modo oscuro */
+    --text-contrast: 1.2; /* Mayor contraste para textos */
+    --box-text-color: #a5b4fc; /* Color más claro para texto en cajas con fondo en modo oscuro */
+    --box-bg-opacity: 0.25;
+    --box-border-opacity: 0.5;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Asegurarse de que el contenido principal comience después del header */
+main {
+  width: 100%;
+  position: relative;
+}
+
+/* Eliminar márgenes y paddings por defecto */
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos para el scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Asegurarse de que el canvas tenga fondo transparente */
+canvas {
+  background-color: transparent;
+}
+
+/* Clase para el contenedor del canvas */
+.canvas-container {
+  background-color: var(--background);
+}
+
+/* Mejorar contraste de textos en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  h1, h2, h3, h4, h5, h6 {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  p, span, div {
+    font-weight: var(--text-contrast);
+  }
+  
+  /* Mejorar visibilidad de elementos con fondo transparente */
+  .bg-white\/10, .bg-white\/20, .bg-white\/30 {
+    backdrop-filter: blur(8px);
+  }
+  
+  /* Mejorar contraste de bordes */
+  .border-white\/10, .border-white\/20, .border-white\/30 {
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Estilos para mejorar el contraste de texto en cajas con fondo */
+.text-box {
+  color: var(--box-text-color);
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para cajas con fondo */
+.bg-box {
+  background-color: rgba(255, 255, 255, var(--box-bg-opacity));
+  border: 1px solid rgba(255, 255, 255, var(--box-border-opacity));
+  backdrop-filter: blur(8px);
+}
+
+/* Estilos específicos para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  /* Mejorar contraste de texto en cajas con fondo en modo oscuro */
+  .text-indigo-600, .text-blue-600, .text-purple-600 {
+    color: var(--box-text-color);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(165, 180, 252, 0.3);
+  }
+  
+  /* Mejorar visibilidad de fondos en modo oscuro */
+  .bg-white\/10 {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  .bg-white\/20 {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  .bg-white\/30 {
+    background-color: rgba(255, 255, 255, 0.35);
+  }
+  
+  /* Mejorar contraste de bordes en modo oscuro */
+  .border-white\/10, .border-white\/20, .border-white\/30 {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}
