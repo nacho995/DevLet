@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "María García",
+    "rating": 5,
+    "comment": "Excelente servicio, el desarrollo web superó mis expectativas. Muy profesionales y atentos a los detalles.",
+    "date": "2023-12-15"
+  },
+  {
+    "id": 2,
+    "name": "Carlos Rodríguez",
+    "rating": 4,
+    "comment": "Muy buen trabajo en el diseño de mi aplicación. El proceso fue fluido y el resultado final es impresionante.",
+    "date": "2023-11-28"
+  },
+  {
+    "id": 3,
+    "name": "Laura Martínez",
+    "rating": 5,
+    "comment": "Increíble experiencia trabajando con este equipo. Entendieron perfectamente lo que necesitaba y lo entregaron a tiempo.",
+    "date": "2023-10-10"
+  },
+  {
+    "id": 4,
+    "name": "Javier López",
+    "rating": 4,
+    "comment": "Muy satisfecho con el resultado final. El equipo fue muy receptivo a mis comentarios y realizaron los cambios rápidamente.",
+    "date": "2023-09-22"
+  },
+  {
+    "id": 5,
+    "name": "Ana Sánchez",
+    "rating": 5,
+    "comment": "Trabajar con este equipo ha sido una experiencia excepcional. Profesionales, creativos y muy eficientes.",
+    "date": "2023-08-15"
+  }
+] 

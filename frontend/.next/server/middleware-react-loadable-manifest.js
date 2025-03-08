@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"app/Components/ClientReviewsSection.jsx -> ./ReviewsSection\":{\"id\":\"app/Components/ClientReviewsSection.jsx -> ./ReviewsSection\",\"files\":[\"static/chunks/_app-pages-browser_src_app_Components_ReviewsSection_jsx.js\"]}}"

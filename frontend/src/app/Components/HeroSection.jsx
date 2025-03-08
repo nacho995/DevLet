@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { marketingPhrases } from './data/websiteData';
 
-const HeroSection = ({ isVisible }) => {
+const HeroSection = ({ isVisible = true }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Detectar modo oscuro
@@ -19,27 +19,13 @@ const HeroSection = ({ isVisible }) => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => checkDarkMode();
     
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-    } else {
-      mediaQuery.addListener(handleChange);
-    }
+    mediaQuery.addEventListener('change', handleChange);
     
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
-      } else {
-        mediaQuery.removeListener(handleChange);
-      }
-    };
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   return (
-    <div 
-      className={`relative z-10 w-full transition-all duration-1000 transform ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}
-    >
+    <div className="relative z-10 w-full">
       <div className="relative min-h-[90vh] w-full overflow-hidden">
         {/* Elementos flotantes - Ocultos en pantallas muy pequeñas */}
         <div className="absolute inset-0 z-0 pointer-events-none">

@@ -5,18 +5,13 @@ import ServicesSection from './ServicesSection';
 import ProcessSection from './ProcessSection';
 import BenefitsSection from './BenefitsSection';
 import CTASection from './CTASection';
+import ClientReviewsSection from './ClientReviewsSection';
 import useCanvasAnimation from './utils/useCanvasAnimation';
 
 const Presentation = () => {
   // Estado para controlar la renderización del cliente
   const [isClient, setIsClient] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [isVisible, setIsVisible] = useState({
-    hero: false,
-    services: false,
-    benefits: false,
-    cta: false
-  });
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Calcular el color basado en el scroll
@@ -51,33 +46,30 @@ const Presentation = () => {
       colors.length - 2
     );
     
-    // Calcular el porcentaje entre los dos colores
-    const colorPercentage = (scrollPercentage * (colors.length - 1) * 0.8) - colorIndex; // Reducido de 1.2 a 0.8
+    // Calcular la transición entre dos colores
+    const nextColorIndex = colorIndex + 1;
+    const colorRatio = (scrollPercentage * (colors.length - 1) * 0.8) - colorIndex;
     
     // Interpolar entre los dos colores
-    const r = Math.round(colors[colorIndex].r + colorPercentage * (colors[colorIndex + 1].r - colors[colorIndex].r));
-    const g = Math.round(colors[colorIndex].g + colorPercentage * (colors[colorIndex + 1].g - colors[colorIndex].g));
-    const b = Math.round(colors[colorIndex].b + colorPercentage * (colors[colorIndex + 1].b - colors[colorIndex].b));
+    const r = Math.round(colors[colorIndex].r + (colors[nextColorIndex].r - colors[colorIndex].r) * colorRatio);
+    const g = Math.round(colors[colorIndex].g + (colors[nextColorIndex].g - colors[colorIndex].g) * colorRatio);
+    const b = Math.round(colors[colorIndex].b + (colors[nextColorIndex].b - colors[colorIndex].b) * colorRatio);
     
-    // Usar opacidad variable según el modo
-    const opacity = isDarkMode ? 'var(--canvas-particle-opacity)' : '1';
-    
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    return `rgba(${r}, ${g}, ${b}, ${isDarkMode ? 'var(--canvas-particle-opacity)' : '1'})`;
   };
 
   // Usar el hook de animación de canvas con un color inicial
   const { canvasRef, scrollPosition, updateColor } = useCanvasAnimation(
-    // Usamos un color inicial
     isDarkMode ? 'rgba(99, 90, 255, var(--canvas-particle-opacity))' : 'rgba(79, 70, 229, 1)'
   );
-  
-  // Actualizar el color cuando scrollPosition cambie
+
+  // Actualizar el color basado en el scroll
   useEffect(() => {
-    if (scrollPosition > 0) {
+    if (isClient) {
       const newColor = getColorFromScroll(scrollPosition);
       updateColor(newColor);
     }
-  }, [scrollPosition, updateColor, isDarkMode]);
+  }, [scrollPosition, isDarkMode, isClient, updateColor]);
 
   // Detectar modo oscuro
   useEffect(() => {
@@ -92,62 +84,33 @@ const Presentation = () => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => checkDarkMode();
     
-    // Usar addEventListener para compatibilidad con todos los navegadores
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-    } else {
-      // Fallback para navegadores antiguos
-      mediaQuery.addListener(handleChange);
-    }
-    
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
-      } else {
-        mediaQuery.removeListener(handleChange);
-      }
-    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Efecto para marcar cuando estamos en el cliente y calcular la altura del header
+  // Detectar cuando el componente está en el cliente
   useEffect(() => {
     setIsClient(true);
-    
-    // Función para calcular la altura del header
+  }, []);
+
+  // Calcular la altura del header para el padding
+  useEffect(() => {
     const calculateHeaderHeight = () => {
-      const headerElement = document.querySelector('header');
-      if (headerElement) {
-        const height = headerElement.offsetHeight;
-        setHeaderHeight(height);
+      const header = document.querySelector('header');
+      if (header) {
+        setHeaderHeight(header.offsetHeight);
       }
     };
-    
-    // Calcular inicialmente y luego en cada resize
-    calculateHeaderHeight();
-    window.addEventListener('resize', calculateHeaderHeight);
 
-    // Configurar animaciones de entrada
-    setTimeout(() => {
-      setIsVisible(prev => ({ ...prev, hero: true }));
+    if (isClient) {
+      calculateHeaderHeight();
+      window.addEventListener('resize', calculateHeaderHeight);
       
-      setTimeout(() => {
-        setIsVisible(prev => ({ ...prev, services: true }));
-        
-        setTimeout(() => {
-          setIsVisible(prev => ({ ...prev, benefits: true }));
-          
-          setTimeout(() => {
-            setIsVisible(prev => ({ ...prev, cta: true }));
-          }, 400);
-        }, 400);
-      }, 400);
-    }, 100);
-    
-    // Limpiar event listeners
-    return () => {
-      window.removeEventListener('resize', calculateHeaderHeight);
-    };
-  }, []);
+      return () => {
+        window.removeEventListener('resize', calculateHeaderHeight);
+      };
+    }
+  }, [isClient]);
 
   return (
     <section 
@@ -165,38 +128,24 @@ const Presentation = () => {
       {/* Contenido principal con z-index para estar por encima del canvas */}
       <div className="relative z-10">
         {/* Sección Hero */}
-        <HeroSection isVisible={isVisible.hero} />
+        <HeroSection />
 
         {/* Sección de Servicios */}
-        <div 
-          className={`container relative mx-auto px-4 sm:px-6 lg:px-8 mt-32 transition-all duration-1000 transform ${
-            isVisible.services ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-          }`}
-        >
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1 rounded-full bg-white/10 backdrop-blur-sm text-indigo-600 dark:text-indigo-400 text-sm font-medium mb-4">
-              Mis Servicios
-            </span>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Soluciones Web a Tu Medida
-            </h2>
-            <div className="mt-4 w-24 h-1 bg-gradient-to-r from-indigo-600 to-purple-600 mx-auto rounded-full"></div>
-            <p className="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-6">
-              Servicios de diseño web profesional adaptados a tus necesidades
-            </p>
-          </div>
-          
-          <ServicesSection isVisible={isVisible.services} />
-        </div>
+        <ServicesSection />
 
         {/* Sección "Cómo Funciona" */}
-        <ProcessSection isVisible={isVisible.services} />
+        <ProcessSection />
 
         {/* Sección de Beneficios */}
-        <BenefitsSection isVisible={isVisible.benefits} />
+        <BenefitsSection />
+        
+        {/* Sección de Reseñas */}
+        <div className="relative z-50">
+          <ClientReviewsSection />
+        </div>
             
         {/* CTA final */}
-        <CTASection isVisible={isVisible.cta} />
+        <CTASection />
       </div>
     </section>
   );
